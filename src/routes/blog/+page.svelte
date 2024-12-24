@@ -13,7 +13,6 @@
 
 	const latestBlog = blogs ? blogs[0] : null;
 
-	console.log(latestBlog);
 	const pageTitle = latestBlog?.title.substring(0, 50);
 
 	const pageDescription = latestBlog?.description.substring(0, 150);
@@ -21,12 +20,7 @@
 	const blogsWithoutFirstPost = blogs?.filter((blog: any) => blog.id !== latestBlog?.id);
 </script>
 
-<Seo
-	title={pageTitle}
-	description={pageDescription}
-	canonicalUrl="http://localhost:5173/blog"
-	imageUrl=".com"
-/>
+<Seo title={pageTitle} description={pageDescription} imageUrl=".com" />
 
 <section class=" my-6 mx-20">
 	<div>

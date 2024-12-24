@@ -27,7 +27,7 @@
 		const formData = new FormData(event.target);
 
 		const data = {};
-		console.log(data);
+
 		formData.forEach((value, key) => {
 			data[key] = value;
 		});
@@ -35,7 +35,7 @@
 		spinnerVisible = true;
 		try {
 			const res = await sendUserMessage(data);
-			console.log(res);
+
 			if (!res.ok) {
 				throw new Error('Error sending message');
 			}
