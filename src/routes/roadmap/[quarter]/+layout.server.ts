@@ -1,78 +1,79 @@
 import { getContext } from 'svelte';
 import { PUBLIC_ROADMAP_URL } from '$env/static/public'
 import type { LayoutServerLoad } from '../$types';
+import { redirect } from '@sveltejs/kit';
 
 export const load = (async ({ fetch, params }) => {
-
-    // const API_URL = ;
     const roadmap = await fetch(PUBLIC_ROADMAP_URL)
     const roadmapData = await roadmap.json()
-  
-    const { quarter }:any = params
-   
-     const roadmaps= roadmapData.roadmaps
-    
-     const roadmapsWithId = roadmaps.map((item:any, index:any) => ({
-        ...item,
-        id: index + 1 // Assigning a unique id starting from 1
-      }));
-      const contentData = roadmapsWithId.filter((item: { slug: string | undefined }) => item.slug && item.slug.includes(quarter));
+    const { quarter }: any = params
 
-        
-    const filteredId = contentData[0].id;
+    const roadmaps = roadmapData.roadmaps.sort((a: any, b: any) => {
+        // Extract year and quarter
+        const [aQ, aY] = a.slug.split('_').reverse()
+        const [bQ, bY] = b.slug.split('_').reverse()
 
-   
-    let navigationData = roadmapsWithId.filter((item: any) => {
-        const id = item.id;
-    
-        let start = (filteredId - 1 + roadmapsWithId.length) % roadmapsWithId.length;
-        let end = (filteredId + 2) % roadmapsWithId.length;
+        // Compare years first
+        if (aY !== bY) return Number(bY) - Number(aY)
 
-     
-
-        if (end < start) {
-            return id >= start - end;
-        } else if (start < 1) {
-
-            return id >= start + 1 && id <= end + 1;
-        } else {
-            return id >= start && id <= end;
-        }
-        
-
-
+        // If same year, compare quarters
+        return Number(aQ.replace('q', '')) - Number(bQ.replace('q', ''))
     });
-  
-  navigationData=  navigationData.map((item: any) => {
-    if(item.slug.includes('2023')){
-        return {
-            ...item,
-            background_color: '#83E9FF', 
-            color: '#83E9FF'
-          };
-        } else if(item.slug.includes('2024')){
-            return {
-                ...item,
-                background_color: '#EE83FF', 
-                color: '#EE83FF' 
-              };
-        }else if(item.slug.includes('2025')){
-            return {
-                ...item,
-                background_color: '#5BFFB0', 
-                color: '#5BFFB0' 
-              };
-        }else{
-            return {
-                ...item,
-                background_color: '#5BFFB0', 
-                color: '#5BFFB0' 
-              };
+
+    let contentData = roadmaps.filter((item: { slug: string | undefined }) =>
+        item.slug && item.slug.includes(quarter)
+    );
+
+    // If no roadmap found for the requested quarter, find the nearest past roadmap
+    if (!contentData.length) {
+        const [q, y] = quarter.split('_').reverse()
+        const quarterNum = Number(q.replace('q', ''))
+        const year = Number(y)
+
+        // Find the nearest past roadmap
+        const nearestRoadmap = roadmaps.find((item: any) => {
+            const [itemQ, itemY] = item.slug.split('_').reverse()
+            const itemYear = Number(itemY)
+            const itemQuarter = Number(itemQ.replace('q', ''))
+
+            return (itemYear < year) || (itemYear === year && itemQuarter < quarterNum)
+        });
+
+        if (nearestRoadmap) {
+            throw redirect(307, `/roadmap/${nearestRoadmap.slug}`);
         }
-});
-   
-    
-    const active = contentData[0].slug
-     
+    }
+
+
+    let navigationData = roadmaps.slice(0, 3).map((item: any) => {
+        if (item.slug.includes('2023')) {
+            return {
+                ...item,
+                background_color: '#83E9FF',
+                color: '#83E9FF'
+            };
+        } else if (item.slug.includes('2024')) {
+            return {
+                ...item,
+                background_color: '#EE83FF',
+                color: '#EE83FF'
+            };
+        } else if (item.slug.includes('2025')) {
+            return {
+                ...item,
+                background_color: '#5BFFB0',
+                color: '#5BFFB0'
+            };
+        } else {
+            return {
+                ...item,
+                background_color: '#5BFFB0',
+                color: '#5BFFB0'
+            };
+        }
+    });
+
+    const active = contentData[0].slug;
+
     return { navigationData, contentData, active };
 }) satisfies LayoutServerLoad;
