@@ -53,6 +53,17 @@ export const ourTeam = [
         "imageUrl": "romi.jpg",
         "position": "Community Manager",
         "socialLink": "https://www.linkedin.com/in/kromy/"
+    },
+    {
+        "name": "Sergio M.L. Tarrero",
+        "imageUrl": "/Giulio.jpeg",
+        "position": "Editor",
+        "socialLink": "https://www.linkedin.com/in/giulioprisco"
     }
 
 ]
+
+// name: Giulio Prisco
+// imageUrl: /giulio.jpeg
+// position: Senior Editor
+// socialLink: https://www.linkedin.com/in/giulioprisco/

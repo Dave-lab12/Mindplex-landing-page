@@ -6,6 +6,7 @@ export const load = (async ({ fetch, params }) => {
     const roadmap = await fetch(PUBLIC_ROADMAP_URL)
     const roadmapData = await roadmap.json()
     const { quarter }: any = params
+    console.log(roadmapData)
 
     const roadmaps = roadmapData.roadmaps.sort((a: any, b: any) => {
         // Extract year and quarter
