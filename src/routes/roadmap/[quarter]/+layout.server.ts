@@ -1,4 +1,3 @@
-import { getContext } from 'svelte';
 import { PUBLIC_ROADMAP_URL } from '$env/static/public'
 import type { LayoutServerLoad } from '../$types';
 import { redirect } from '@sveltejs/kit';
@@ -20,27 +19,42 @@ export const load = (async ({ fetch, params }) => {
         return Number(aQ.replace('q', '')) - Number(bQ.replace('q', ''))
     });
 
+
     let contentData = roadmaps.filter((item: { slug: string | undefined }) =>
         item.slug && item.slug.includes(quarter)
     );
 
     // If no roadmap found for the requested quarter, find the nearest past roadmap
     if (!contentData.length) {
-        const [q, y] = quarter.split('_').reverse()
-        const quarterNum = Number(q.replace('q', ''))
-        const year = Number(y)
+        const [q, y] = quarter.split('_').reverse();
+        const targetYear = Number(y);
+        const targetQuarter = Number(q.replace('q', ''));
 
-        // Find the nearest past roadmap
-        const nearestRoadmap = roadmaps.find((item: any) => {
-            const [itemQ, itemY] = item.slug.split('_').reverse()
-            const itemYear = Number(itemY)
-            const itemQuarter = Number(itemQ.replace('q', ''))
+        // Sort roadmaps by year and quarter in descending order
+        const sortedRoadmaps = [...roadmaps].sort((a, b) => {
+            const [aQ, aY] = a.slug.split('_').reverse();
+            const [bQ, bY] = b.slug.split('_').reverse();
+            const yearDiff = Number(bY) - Number(aY);
+            if (yearDiff !== 0) return yearDiff;
+            return Number(bQ.replace('q', '')) - Number(aQ.replace('q', ''));
+        });
 
-            return (itemYear < year) || (itemYear === year && itemQuarter < quarterNum)
+        // Find the first roadmap that's before our target date
+        const nearestRoadmap = sortedRoadmaps.find(item => {
+            const [itemQ, itemY] = item.slug.split('_').reverse();
+            const itemYear = Number(itemY);
+            const itemQuarter = Number(itemQ.replace('q', ''));
+
+            return (itemYear < targetYear) ||
+                (itemYear === targetYear && itemQuarter < targetQuarter);
         });
 
         if (nearestRoadmap) {
             throw redirect(307, `/roadmap/${nearestRoadmap.slug}`);
+        } else {
+            // If no past roadmap found, redirect to the oldest available roadmap
+            const oldestRoadmap = sortedRoadmaps[sortedRoadmaps.length - 1];
+            throw redirect(307, `/roadmap/${oldestRoadmap.slug}`);
         }
     }
 
@@ -72,6 +86,7 @@ export const load = (async ({ fetch, params }) => {
             };
         }
     });
+
 
     const active = contentData[0].slug;
 
