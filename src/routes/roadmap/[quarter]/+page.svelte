@@ -4,7 +4,7 @@
 
 	const roadmap = data.navigationData;
 	const roadmapContent = data.contentData;
-	const filteredContent = roadmapContent[0].steps;
+	const filteredContent = roadmapContent[0]?.steps;
 	const active = data.active;
 
 	const colorMapping = {
@@ -22,6 +22,11 @@
 			text: '#5BFFB0',
 			bg: '#5BFFB0',
 			boxColors: ['#529062', '#62BA90']
+		},
+		'2026': {
+			text: '#FFB05B',
+			bg: '#FFB05B',
+			boxColors: ['#905290', '#BA62AA']
 		}
 	};
 
