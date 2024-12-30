@@ -15,7 +15,7 @@ export const load = (async ({ fetch, params }) => {
         if (yearDiff !== 0) return yearDiff;
         return Number(aQ.replace('q', '')) - Number(bQ.replace('q', ''));
     });
-    console.log(roadmapData)
+
     const currentIndex = roadmaps.findIndex(r => r.slug === quarter);
     if (!roadmaps.find(r => r.slug === quarter)) {
         throw redirect(307, `/roadmap/${roadmaps[roadmaps.length - 1].slug}`);
