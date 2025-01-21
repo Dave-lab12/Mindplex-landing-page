@@ -55,7 +55,7 @@ export const ourTeam = [
         "socialLink": "https://www.linkedin.com/in/kromy/"
     },
     {
-        "name": "Sergio Tarrero",
+        "name": "Giulio Prisco",
         "imageUrl": "/Giulio.jpeg",
         "position": "Senior Editor",
         "socialLink": "https://www.linkedin.com/in/giulioprisco"
