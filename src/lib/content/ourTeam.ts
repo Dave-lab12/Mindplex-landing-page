@@ -5,12 +5,12 @@ export const ourTeam = [
         "position": "Chief Scientific Advisor",
         "socialLink": "https://www.linkedin.com/in/bengoertzel"
     },
-    {
-        "name": "Amara Angelica",
-        "imageUrl": "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/amara.png",
-        "position": "Senior Editor",
-        "socialLink": "https://www.linkedin.com/in/amaraa"
-    },
+    // {
+    //     "name": "Amara Angelica",
+    //     "imageUrl": "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/amara.png",
+    //     "position": "Senior Editor",
+    //     "socialLink": "https://www.linkedin.com/in/amaraa"
+    // },
     {
         "name": "Conor O`Higgins",
         "imageUrl": "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/conor.png",
